@@ -1,17 +1,27 @@
 import http from 'node:http'
 
+const users = []
+
 const server = http.createServer((request, response) => {
   const { method, url } = request
 
   if (method == 'GET' && url == '/users') {
-    return response.end('Listagem de usuarios')
+    return response
+      .setHeader('Content-type', 'application/json')
+      .end(JSON.stringify(users))
   }
 
   if (method == 'POST' && url == '/users') {
-    return response.end('Criando novo usuario')
+    users.push({
+      id: 1,
+      name: 'Generic Name',
+      email: 'genericemail@generic.com'
+    })
+
+    return response.writeHead(201).end()
   }
 
-  return response.end('hello world')
+  return response.writeHead(404).end()
 })
 
 server.listen(3333)
