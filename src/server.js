@@ -1,22 +1,25 @@
 import http from 'node:http'
+import { Database } from './database'
 
 const users = []
+
+const database = new Database()
 
 const server = http.createServer((request, response) => {
   const { method, url } = request
 
   if (method == 'GET' && url == '/users') {
-    return response
-      .setHeader('Content-type', 'application/json')
-      .end(JSON.stringify(users))
+    return response.end(JSON.stringify(users))
   }
 
   if (method == 'POST' && url == '/users') {
-    users.push({
+    const user = {
       id: 1,
       name: 'Generic Name',
       email: 'genericemail@generic.com'
-    })
+    }
+
+    database.insert('users', user)
 
     return response.writeHead(201).end()
   }
